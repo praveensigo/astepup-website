@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <script src="https://player.vimeo.com/api/player.js"></script>
+  <body>
+    <div id="vimeo-player" width="100%" height="100%"></div>
+    <script>
+      localStorage.setItem("vimeoVideoId", "916738172?h=534b3e0a64");
+      let videoId = localStorage.getItem("vimeoVideoId");
+      console.log(videoId);
+      const options = {
+        id: videoId,
+        loop: true,
+      };
+      var vimeoIframe = document.getElementById("vimeo-player");
+      var videoplayer = new Vimeo.Player(vimeoIframe, options);
+      videoplayer.on("play", function () {
+        console.log("Video is playing");
+      });
+      videoplayer.on("pause", function () {
+        console.log("Video is paused");
+      });
+      videoplayer.on("ended", function (data) {
+        console.log("Video has ended");
+        console.log(data);
+      });
+    </script>
+  </body>
+</html>
