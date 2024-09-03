@@ -131,9 +131,11 @@ class Quizhelper {
               '/lesson/stage/$stageId',
               extra: {'cid': courseId, 'selectedKey': selectedKey});
           return null;
+        } else {
+          await controller.courseRepository.updateUserStageStatus(stageId);
+          return 'data';
         }
       }
-      return 'data';
     }
   }
 
