@@ -56,13 +56,13 @@ class _MasterViewyCertificateState extends State<MasteryViewCertificate> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      courseTitle,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
+                    // Text(
+                    //   courseTitle,
+                    //   style: Theme.of(context)
+                    //       .textTheme
+                    //       .titleLarge!
+                    //       .copyWith(fontWeight: FontWeight.bold),
+                    // ),
                     const SizedBox(height: 15),
                     Center(
                         child: PdfViewerPage(
