@@ -165,7 +165,7 @@ class QuizController extends GetxController {
           currentQuizData['quiz_title'] = stagedetail!.stageName;
           currentQuizData['quiz_decs'] = stagedetail!.stageDescription;
           currentQuizData['quiz_id'] = stagedetail!.stageId;
-          currentQuizData['quiz_count'] = stagedetail!.questionCount;
+          currentQuizData['question_count'] = stagedetail!.questionCount;
         }
         savename(StorageKeys.quizData, currentQuizData);
       }
@@ -193,7 +193,7 @@ class QuizController extends GetxController {
         currentQuizData['quiz_title'] = courseDetails!.courseName;
         currentQuizData['quiz_decs'] = courseDetails!.courseDescription;
         currentQuizData['quiz_id'] = courseId.toString();
-        currentQuizData['quiz_count'] = courseDetails!.questionCount;
+        currentQuizData['question_count'] = courseDetails!.questionCount;
         savename(StorageKeys.quizData, currentQuizData);
       }
     } catch (e) {
@@ -593,7 +593,7 @@ class QuizController extends GetxController {
               .containsKey("next")) {
             Map<String, dynamic>? module =
                 Get.find<SideMenuManager>().getModuleById(moduleid);
-            if (module != null && (module['quiz_count'] ?? 0) > 0) {
+            if (module != null && (module['question_count'] ?? 0) > 0) {
               return null;
             } else {
               courseRepository.updateUserModuleStatus(stageid, moduleid);
@@ -771,14 +771,14 @@ class QuizController extends GetxController {
                 stage['modules'].forEach((module) {
                   if (module["module_id"].toString() == moduleId) {
                     try {
-                      if ((stage['quiz_count'] ?? 0) > 0) {
+                      if ((stage['question_count'] ?? 0) > 0) {
                         var selectedKey = stage['key'];
                         GoRouter.of(context).go('/lesson/stage/$courseId',
                             extra: {
                               'cid': courseId,
                               'selectedKey': selectedKey
                             });
-                      } else if ((data['final_mastery']['quiz_count'] ?? 0) >
+                      } else if ((data['final_mastery']['question_count'] ?? 0) >
                           0) {
                         var selectedKey = data['final_mastery']['key'] ?? "";
                         GoRouter.of(context).go(
@@ -934,7 +934,7 @@ class QuizController extends GetxController {
           }
         } else if (response.data['message'] == 'Course completed') {
           Map<String, dynamic> data = getSavedObject(StorageKeys.stageDetails);
-          if ((data['final_mastery']['quiz_count'] ?? 0) > 0) {
+          if ((data['final_mastery']['question_count'] ?? 0) > 0) {
             if (context.mounted) {
               var selectedKey = data['final_mastery']['key'] ?? "";
               GoRouter.of(context).go(
