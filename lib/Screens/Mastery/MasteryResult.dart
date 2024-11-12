@@ -216,8 +216,8 @@ class MasteryResult extends StatelessWidget {
                                                 checkPercentage:
                                                     checkPercentage)))
                               ])),
-                          CustomTooltip(
-                            percentage: controller.quizPercetage,
+                         CustomTooltip(
+                            percentage:double.parse( controller.tooltipQuizpercentage).toInt(),
                           )
                         ],
                       ),

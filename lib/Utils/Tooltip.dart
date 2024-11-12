@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
 class CustomTooltip extends StatefulWidget {
-  final String percentage;
-  const CustomTooltip({super.key, this.percentage = "50"});
+  final int percentage;
+  const CustomTooltip({super.key, required this.percentage});
 
   @override
   State<CustomTooltip> createState() => _CustomTooltipState();
@@ -38,66 +38,46 @@ class _CustomTooltipState extends State<CustomTooltip> {
             arrowBaseWidth: 15.0,
             arrowLength: 20.0,
             borderRadius: 0,
-            minimumOutsideMargin: 0,
+            minimumOutsideMargin: 00,
             borderColor: Colors.white,
-            constraints: const BoxConstraints(
-              minHeight: 0.0,
-              maxHeight: double.infinity,
-              minWidth: 0.0,
-              maxWidth: double.infinity,
-            ),
-            showCloseButton: false,
+            // showCloseButton: ShowCloseButton.none,
             touchThroughAreaShape: ClipAreaShape.rectangle,
             barrierColor: const Color.fromARGB(26, 47, 45, 47),
             content: SizedBox(
-              width: 160,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              width: 280,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   RichText(
-                    softWrap: true,
-                    textAlign: TextAlign.center,
                     text: TextSpan(
                       children: [
-                        const TextSpan(
+                        TextSpan(
                           text: 'Pass: ',
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontFamily: 'Poppins-Regular',
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: Colors.green,
+                                  ),
                         ),
                         TextSpan(
-                          text: "50% and above",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'Poppins-Regular',
-                          ),
-                        ),
+                            text: "${widget.percentage}% and above",
+                            style: Theme.of(context).textTheme.bodyMedium!),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
                   RichText(
-                    softWrap: true,
-                    textAlign: TextAlign.center,
                     text: TextSpan(
                       children: [
-                        const TextSpan(
+                        TextSpan(
                           text: 'Fail: ',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontFamily: 'Poppins-Regular',
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: Colors.red,
+                                  ),
                         ),
                         TextSpan(
-                          text: "Below 50% ",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'Poppins-Regular',
-                          ),
-                        ),
+                            text: "Below ${widget.percentage}%",
+                            style: Theme.of(context).textTheme.bodyMedium!),
                       ],
                     ),
                   ),

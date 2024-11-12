@@ -189,9 +189,9 @@ class StageResult extends StatelessWidget {
                                               controller.quizPercetage),
                                           checkPercentage: checkPercentage)))
                         ])),
-                    CustomTooltip(
-                      percentage: controller.quizPercetage,
-                    )
+                   CustomTooltip(
+                            percentage:double.parse( controller.tooltipQuizpercentage).toInt(),
+                          )
                   ],
                 ),
                 const SizedBox(height: 20),

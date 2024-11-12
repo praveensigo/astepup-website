@@ -44,6 +44,7 @@ class QuizController extends GetxController {
   String moduleName = '';
   ModuleDetails? moduleDetails;
   String quizPercetage = "0";
+  String tooltipQuizpercentage = "0";
   @override
   void onInit() {
     var quizPercentageValue = getSavedObject(StorageKeys.quizPercentage);
@@ -89,6 +90,8 @@ class QuizController extends GetxController {
             .map((e) => questionlist.add(Question.fromJson(e)))
             .toList();
         if (questionlist.isNotEmpty) {
+           tooltipQuizpercentage =
+              response?.data['data'][0]['quiz_criteria']['percentage']??"";
           currentQuizData['quiz_title'] =
               response?.data['data'][0]['stage_name'];
           currentQuizData['quiz_decs'] =
