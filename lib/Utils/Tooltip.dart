@@ -1,104 +1,158 @@
 import 'package:flutter/material.dart';
-import 'package:super_tooltip/super_tooltip.dart';
 
 class CustomTooltip extends StatefulWidget {
   final int percentage;
-  const CustomTooltip({super.key, required this.percentage});
+  const CustomTooltip({Key? key, required this.percentage}) : super(key: key);
 
   @override
-  State<CustomTooltip> createState() => _CustomTooltipState();
+  _CustomTooltipState createState() => _CustomTooltipState();
 }
 
-class _CustomTooltipState extends State<CustomTooltip> {
-  final _controller = SuperTooltipController();
-  Future<bool> _willPopCallback() async {
-    if (_controller.isVisible) {
-      await _controller.hideTooltip();
-      return false;
+class _CustomTooltipState extends State<CustomTooltip> with WidgetsBindingObserver {
+  bool _isTooltipVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // Detect when app metrics change (e.g., orientation or screen size changes)
+  @override
+  void didChangeMetrics() {
+    if (_isTooltipVisible) {
+      Navigator.of(context, rootNavigator: true).pop();
+      _isTooltipVisible = false;
     }
-    return true;
+  }
+
+  void _showCustomTooltip(BuildContext context, Offset offset) {
+    _isTooltipVisible = true;
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Stack(
+          children: [
+            Positioned(
+              left: offset.dx - 155, // Center tooltip over icon
+              top: offset.dy + 10, // Position slightly below icon
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  children: [
+                    CustomPaint(
+                      painter: TrianglePainter(),
+                      child: const SizedBox(
+                        width: 20,
+                        height: 30,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      width: 320,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Pass: ',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(color: Colors.green),
+                                  ),
+                                  TextSpan(
+                                    text: "${widget.percentage}% and above",
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Fail: ',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(color: Colors.red),
+                                  ),
+                                  TextSpan(
+                                    text: "Below ${widget.percentage}%",
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      _isTooltipVisible = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _willPopCallback,
-      child: GestureDetector(
-        onTap: () async {
-          await _controller.showTooltip();
-        },
-        child: SuperTooltip(
-            shadowBlurRadius: 0,
-            shadowColor: Colors.white,
-            showBarrier: true,
-            controller: _controller,
-            popupDirection: TooltipDirection.down,
-            backgroundColor: Colors.white,
-            arrowTipDistance: 0.0,
-            arrowBaseWidth: 15.0,
-            arrowLength: 20.0,
-            borderRadius: 0,
-            minimumOutsideMargin: 00,
-            borderColor: Colors.white,
-            // showCloseButton: ShowCloseButton.none,
-            touchThroughAreaShape: ClipAreaShape.rectangle,
-            barrierColor: const Color.fromARGB(26, 47, 45, 47),
-            content: SizedBox(
-              width: 280,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Pass: ',
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    color: Colors.green,
-                                  ),
-                        ),
-                        TextSpan(
-                            text: "${widget.percentage}% and above",
-                            style: Theme.of(context).textTheme.bodyMedium!),
-                      ],
-                    ),
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Fail: ',
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    color: Colors.red,
-                                  ),
-                        ),
-                        TextSpan(
-                            text: "Below ${widget.percentage}%",
-                            style: Theme.of(context).textTheme.bodyMedium!),
-                      ],
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      _controller.hideTooltip();
-                    },
-                    child: Container(),
-                  )
-                ],
-              ),
-            ),
-            child: const SizedBox(
-                width: 19,
-                height: 19,
-                child: Icon(Icons.info_outline_rounded))),
+    return GestureDetector(
+      onTapDown: (TapDownDetails details) {
+        _showCustomTooltip(context, details.globalPosition);
+      },
+      child: const SizedBox(
+        width: 24,
+        height: 24,
+        child: Icon(Icons.info_outline_rounded),
       ),
     );
   }
+}
 
-  void makeTooltip() {
-    _controller.showTooltip();
+// Custom painter to draw a triangle for the tooltip arrow
+class TrianglePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()..color = Colors.white; // Arrow color set to white
+    final Path path = Path();
+
+    path.moveTo(size.width / 2, 0); // Start at the top center
+    path.lineTo(0, size.height); // Draw to bottom left
+    path.lineTo(size.width, size.height); // Draw to bottom right
+    path.close(); // Complete the triangle
+
+    canvas.drawPath(path, paint);
   }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
